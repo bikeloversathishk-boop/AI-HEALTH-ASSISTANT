@@ -4,9 +4,9 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from pathlib import Path
-# ==========================
+
 # Load CSV Data
-# ==========================
+
 # Resolve CSV path relative to this file so the app works regardless of the
 # current working directory when executed.
 base_dir = Path(__file__).resolve().parent
@@ -27,18 +27,18 @@ data = pd.read_csv(csv_path, header=0, names=["symptoms", "advice"], quoting=1, 
 
 
 
-# ==========================
-# Page Config
-# ==========================
+
+# user interface
+
 st.set_page_config(
     page_title="AI Health Assistant",
     page_icon="🩺",
     layout="centered"
 )
 
-# ==========================
-# CSS Styling - Health-tech theme
-# ==========================
+
+#  Styling 
+
 st.markdown("""
 <style>
 /* App background */
@@ -97,16 +97,14 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================
 # Header
-# ==========================
+
 st.markdown("<div class='title'>🧠 AI Health Assistant</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Get personalized health advice based on your symptoms</div>", unsafe_allow_html=True)
 st.write("---")
 
-# ==========================
 # User Input
-# ==========================
+
 user_input = st.text_area("Enter your symptoms (comma-separated or full sentence)")
 
 # ==========================
@@ -118,14 +116,13 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 # Precompute embeddings for all symptoms
 data['embedding'] = data['symptoms'].apply(lambda x: model.encode(x.lower()))
 
-# ==========================
-# Search & Display Advice
-# ==========================
+#  display Advice
+
 if st.button("Get Advice"):
     if user_input.strip() == "":
         st.warning("⚠️ Please enter your symptoms first.")
     else:
-        # Encode user input
+        # Encode input
         user_embedding = model.encode(user_input.lower())
 
         # Compute cosine similarity between user input and all stored symptoms
@@ -141,12 +138,13 @@ if st.button("Get Advice"):
             st.markdown(f"<div class='result-box'>💡 Matched Symptom: <b>{matched_symptom}</b><br>{advice_found}</div>", unsafe_allow_html=True)
         else:
             st.info("❗ No close match found. Please consult a doctor for proper advice.")
-# ==========================
+
 # Sidebar Info
-# ==========================
+
 st.sidebar.title("About")
 st.sidebar.info(
     "🩺 AI Health Assistant\n"
     "Gives advice based on symptoms from health_data.csv\n"
     "Developed by TEAM INSANE | Velammal Vidyalaya Avadi"
+
 ) 
